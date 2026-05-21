@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WebCraft — Custom Websites Built For You</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@400;500&display=swap');
+
+  :root {
+    --bg: #0a0a0f;
+    --surface: #13131a;
+    --surface2: #1c1c28;
+    --border: rgba(255,255,255,0.08);
+    --border2: rgba(255,255,255,0.14);
+    --text: #f0f0f8;
+    --muted: #8888a0;
+    --accent: #7c6fff;
+    --accent2: #b8aaff;
+    --green: #34d97b;
+    --red: #ff5c7a;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+  }
+
+  /* NAV */
+  nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.25rem 2.5rem;
+    border-bottom: 0.5px solid var(--border);
+    position: sticky;
+    top: 0;
+    background: rgba(10,10,15,0.92);
+    backdrop-filter: blur(12px);
+    z-index: 100;
+  }
+  .logo {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.4rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    color: var(--text);
+  }
+  .logo span { color: var(--accent); }
+  .nav-links { display: flex; gap: 2rem; align-items: center; }
+  .nav-links a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 14px;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--text); }
+  .nav-btns { display: flex; gap: 10px; }
+  .btn-ghost {
+    padding: 8px 18px;
+    border: 0.5px solid var(--border2);
+    border-radius: 8px;
+    background: transparent;
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .btn-ghost:hover { background: var(--surface2); }
+  .btn-accent {
+    padding: 8px 18px;
+    border: none;
+    border-radius: 8px;
+    background: var(--accent);
+    color: #fff;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+  .btn-accent:hover { opacity: 0.85; }
+
+  /* HERO */
+  .hero {
+    text-align: center;
+    padding: 6rem 2rem 4rem;
+    max-width: 760px;
+    margin: 0 auto;
+  }
+  .badge {
+    display: inline-block;
+    background: rgba(124,111,255,0.12);
+    border: 0.5px solid rgba(124,111,255,0.35);
+    color: var(--accent2);
+    font-size: 12px;
+    padding: 5px 14px;
+    border-radius: 999px;
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.04em;
+  }
+  h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2.5rem, 6vw, 4rem);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+    margin-bottom: 1.25rem;
+  }
+  h1 em { color: var(--accent); font-style: normal; }
+  .hero-sub {
+    font-size: 1.05rem;
+    color: var(--muted);
+    line-height: 1.75;
+    max-width: 520px;
+    margin: 0 auto 2.5rem;
+  }
+  .hero-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .btn-lg {
+    padding: 14px 32px;
+    border-radius: 10px;
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-lg.primary { background: var(--accent); color: #fff; border: none; }
+  .btn-lg.primary:hover { opacity: 0.88; transform: translateY(-1px); }
+  .btn-lg.secondary { background: transparent; color: var(--text); border: 0.5px solid var(--border2); }
+  .btn-lg.secondary:hover { background: var(--surface2); }
+
+  /* STEPS */
+  .steps-section {
+    padding: 4rem 2.5rem;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  .section-label {
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+  }
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 2.5rem;
+  }
+  .steps-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    border: 0.5px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+  }
+  .step-card {
+    background: var(--surface);
+    padding: 2rem;
+  }
+  .step-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: rgba(124,111,255,0.2);
+    line-height: 1;
+    margin-bottom: 1rem;
+  }
+  .step-card h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+  .step-card p { font-size: 14px; color: var(--muted); line-height: 1.65; }
+
+  /* MODAL OVERLAY */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.75);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--surface);
+    border: 0.5px solid var(--border2);
+    border-radius: 16px;
+    width: 100%;
+    max-width: 520px;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 2rem;
+    animation: popIn 0.2s ease;
+  }
+  @keyframes popIn { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+  }
+  .modal-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+  }
+  .modal-close {
+    background: none;
+    border: none;
+    color: var(--muted);
+    font-size: 1.4rem;
+    cursor: pointer;
+    line-height: 1;
+  }
+  .modal-close:hover { color: var(--text); }
+  .modal-tabs {
+    display: flex;
+    border-bottom: 0.5px solid var(--border);
+    margin-bottom: 1.5rem;
+  }
+  .modal-tab {
+    padding: 8px 16px;
+    font-size: 14px;
+    cursor: pointer;
+    background: none;
+    border: none;
+    color: var(--muted);
+    font-family: 'Inter', sans-serif;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    transition: color 0.15s;
+  }
+  .modal-tab.active { color: var(--text); border-bottom-color: var(--accent); }
+
+  /* FORM */
+  .field { margin-bottom: 1.1rem; }
+  .field label {
+    display: block;
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+  .field input,
+  .field select,
+  .field textarea {
+    width: 100%;
+    background: var(--surface2);
+    border: 0.5px solid var(--border2);
+    border-radius: 8px;
+    padding: 10px 14px;
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .field input:focus,
+  .field select:focus,
+  .field textarea:focus { border-color: var(--accent); }
+  .field textarea { resize: vertical; min-height: 90px; }
+  .field select option { background: var(--surface2); }
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .form-submit {
+    width: 100%;
+    padding: 12px;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    margin-top: 0.5rem;
+    transition: opacity 0.2s;
+  }
+  .form-submit:hover { opacity: 0.88; }
+  .form-note { font-size: 12px; color: var(--muted); text-align: center; margin-top: 10px; }
+
+  /* SUCCESS */
+  .success-box {
+    display: none;
+    text-align: center;
+    padding: 2rem 1rem;
+  }
+  .success-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: rgba(52,217,123,0.12);
+    border: 0.5px solid rgba(52,217,123,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.25rem;
+    font-size: 1.75rem;
+  }
+  .success-box h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+  .success-box p { font-size: 14px; color: var(--muted); line-height: 1.7; }
+
+  /* PRICING */
+  .pricing-section {
+    padding: 4rem 2.5rem;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
+    margin-top: 2.5rem;
+  }
+  .price-card {
+    background: var(--surface);
+    border: 0.5px solid var(--border);
+    border-radius: 16px;
+    padding: 1.75rem;
+    transition: border-color 0.2s;
+  }
+  .price-card:hover { border-color: var(--border2); }
+  .price-card.featured {
+    border: 1.5px solid var(--accent);
+    position: relative;
+  }
+  .featured-badge {
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--accent);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 4px 14px;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+  .price-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+  .price-amount {
+    font-family: 'Syne', sans-serif;
+    font-size: 2.5rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    margin-bottom: 0.25rem;
+  }
+  .price-amount span { font-size: 1rem; font-weight: 400; color: var(--muted); }
+  .price-desc { font-size: 13px; color: var(--muted); margin-bottom: 1.25rem; line-height: 1.6; }
+  .price-features { list-style: none; margin-bottom: 1.5rem; }
+  .price-features li {
+    font-size: 13px;
+    color: var(--muted);
+    padding: 5px 0;
+    border-bottom: 0.5px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .price-features li::before { content: '✓'; color: var(--green); font-size: 12px; }
+  .price-btn {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .price-btn.outline { background: transparent; color: var(--text); border: 0.5px solid var(--border2); }
+  .price-btn.outline:hover { background: var(--surface2); }
+  .price-btn.filled { background: var(--accent); color: #fff; border: none; }
+  .price-btn.filled:hover { opacity: 0.88; }
+
+  /* FOOTER */
+  footer {
+    border-top: 0.5px solid var(--border);
+    padding: 2rem 2.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+  footer p { font-size: 13px; color: var(--muted); }
+
+  /* DASHBOARD (logged in state) */
+  .dashboard { display: none; }
+  .dash-header {
+    padding: 2rem 2.5rem 1rem;
+    border-bottom: 0.5px solid var(--border);
+  }
+  .dash-header h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .dash-header p { font-size: 14px; color: var(--muted); }
+  .dash-body { padding: 2rem 2.5rem; max-width: 900px; margin: 0 auto; }
+  .orders-empty {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: var(--muted);
+  }
+  .orders-empty h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+    color: var(--text);
+  }
+  .order-card {
+    background: var(--surface);
+    border: 0.5px solid var(--border);
+    border-radius: 12px;
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  .order-info h4 {
+    font-size: 15px;
+    font-weight: 500;
+    margin-bottom: 4px;
+  }
+  .order-info p { font-size: 13px; color: var(--muted); }
+  .status-badge {
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+  .status-pending { background: rgba(255,188,0,0.12); color: #ffc840; border: 0.5px solid rgba(255,188,0,0.25); }
+  .status-progress { background: rgba(124,111,255,0.12); color: var(--accent2); border: 0.5px solid rgba(124,111,255,0.25); }
+  .status-done { background: rgba(52,217,123,0.12); color: var(--green); border: 0.5px solid rgba(52,217,123,0.25); }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">Web<span>Craft</span></div>
+  <div class="nav-links">
+    <a href="#how">How it works</a>
+    <a href="#pricing">Pricing</a>
+  </div>
+  <div class="nav-btns" id="navBtns">
+    <button class="btn-ghost" onclick="openModal('login')">Log in</button>
+    <button class="btn-accent" onclick="openModal('signup')">Get started</button>
+  </div>
+</nav>
+
+<!-- MAIN LANDING -->
+<main id="landing">
+  <!-- HERO -->
+  <section class="hero">
+    <div class="badge">✦ Custom websites, zero stress</div>
+    <h1>Your dream website,<br><em>built for you</em></h1>
+    <p class="hero-sub">Tell us what you want. We'll design and build a professional website tailored exactly to you — fast, affordable, and ready to launch.</p>
+    <div class="hero-btns">
+      <button class="btn-lg primary" onclick="openModal('signup')">Order your website →</button>
+      <button class="btn-lg secondary" onclick="document.getElementById('how').scrollIntoView({behavior:'smooth'})">See how it works</button>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="steps-section" id="how">
+    <div class="section-label">How it works</div>
+    <div class="section-title">Three steps to your new site</div>
+    <div class="steps-grid">
+      <div class="step-card">
+        <div class="step-num">01</div>
+        <h3>Create your account</h3>
+        <p>Sign up in seconds. No credit card required to get started.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">02</div>
+        <h3>Place your order</h3>
+        <p>Describe your website — style, features, budget, deadline. The more detail, the better.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">03</div>
+        <h3>We build it for you</h3>
+        <p>Sit back and relax. We'll build your site and deliver it ready to publish.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRICING -->
+  <section class="pricing-section" id="pricing">
+    <div class="section-label">Pricing</div>
+    <div class="section-title">Simple, honest pricing</div>
+    <div class="pricing-grid">
+      <div class="price-card">
+        <div class="price-name">Starter</div>
+        <div class="price-amount">$49<span>/one-time</span></div>
+        <p class="price-desc">Perfect for a simple personal or portfolio site.</p>
+        <ul class="price-features">
+          <li>1-page website</li>
+          <li>Mobile-friendly design</li>
+          <li>3-day delivery</li>
+          <li>1 revision round</li>
+        </ul>
+        <button class="price-btn outline" onclick="openModal('signup')">Get started</button>
+      </div>
+      <div class="price-card featured">
+        <div class="featured-badge">Most popular</div>
+        <div class="price-name">Pro</div>
+        <div class="price-amount">$149<span>/one-time</span></div>
+        <p class="price-desc">Multi-page site with custom design and full features.</p>
+        <ul class="price-features">
+          <li>Up to 5 pages</li>
+          <li>Custom design + branding</li>
+          <li>Contact form included</li>
+          <li>5-day delivery</li>
+          <li>3 revision rounds</li>
+        </ul>
+        <button class="price-btn filled" onclick="openModal('signup')">Order now</button>
+      </div>
+      <div class="price-card">
+        <div class="price-name">Business</div>
+        <div class="price-amount">$299<span>/one-time</span></div>
+        <p class="price-desc">Full-featured business site with everything you need.</p>
+        <ul class="price-features">
+          <li>Unlimited pages</li>
+          <li>E-commerce ready</li>
+          <li>SEO optimization</li>
+          <li>7-day delivery</li>
+          <li>Unlimited revisions</li>
+        </ul>
+        <button class="price-btn outline" onclick="openModal('signup')">Get started</button>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- DASHBOARD (shown after login) -->
+<div id="dashboard" class="dashboard">
+  <div class="dash-header">
+    <h2>My Dashboard</h2>
+    <p id="dashWelcome">Welcome back!</p>
+  </div>
+  <div class="dash-body">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem;">
+      <div>
+        <div style="font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:700;">Your Orders</div>
+        <div style="font-size:13px;color:var(--muted);margin-top:2px;">Track the status of your website orders</div>
+      </div>
+      <button class="btn-accent" onclick="openModal('order')">+ New order</button>
+    </div>
+    <div id="ordersList">
+      <div class="orders-empty">
+        <h3>No orders yet</h3>
+        <p>Place your first order and we'll get building!</p>
+        <br>
+        <button class="btn-accent" onclick="openModal('order')">Order a website →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="logo">Web<span>Craft</span></div>
+  <p>© 2025 WebCraft. All rights reserved.</p>
+</footer>
+
+<!-- AUTH / ORDER MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModalOutside(event)">
+  <div class="modal" id="modalBox">
+
+    <!-- LOGIN FORM -->
+    <div id="formLogin">
+      <div class="modal-header">
+        <div class="modal-title">Welcome back</div>
+        <button class="modal-close" onclick="closeModal()">×</button>
+      </div>
+      <div class="field">
+        <label>Email address</label>
+        <input type="email" id="loginEmail" placeholder="you@example.com" />
+      </div>
+      <div class="field">
+        <label>Password</label>
+        <input type="password" id="loginPass" placeholder="••••••••" />
+      </div>
+      <button class="form-submit" onclick="doLogin()">Log in</button>
+      <p class="form-note">Don't have an account? <a href="#" onclick="switchForm('signup')" style="color:var(--accent2)">Sign up</a></p>
+    </div>
+
+    <!-- SIGNUP FORM -->
+    <div id="formSignup" style="display:none;">
+      <div class="modal-header">
+        <div class="modal-title">Create your account</div>
+        <button class="modal-close" onclick="closeModal()">×</button>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>First name</label>
+          <input type="text" id="signupFirst" placeholder="Jane" />
+        </div>
+        <div class="field">
+          <label>Last name</label>
+          <input type="text" id="signupLast" placeholder="Doe" />
+        </div>
+      </div>
+      <div class="field">
+        <label>Email address</label>
+        <input type="email" id="signupEmail" placeholder="you@example.com" />
+      </div>
+      <div class="field">
+        <label>Password</label>
+        <input type="password" id="signupPass" placeholder="Min. 6 characters" />
+      </div>
+      <button class="form-submit" onclick="doSignup()">Create account</button>
+      <p class="form-note">Already have an account? <a href="#" onclick="switchForm('login')" style="color:var(--accent2)">Log in</a></p>
+    </div>
+
+    <!-- ORDER FORM -->
+    <div id="formOrder" style="display:none;">
+      <div class="modal-header">
+        <div class="modal-title">Order your website</div>
+        <button class="modal-close" onclick="closeModal()">×</button>
+      </div>
+      <div class="field">
+        <label>Your name</label>
+        <input type="text" id="ordName" placeholder="Jane Doe" />
+      </div>
+      <div class="field">
+        <label>Email address</label>
+        <input type="email" id="ordEmail" placeholder="you@example.com" />
+      </div>
+      <div class="field">
+        <label>Website idea / description</label>
+        <textarea id="ordDesc" placeholder="Describe your website — what it's for, who it's for, what pages you need..."></textarea>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Budget</label>
+          <select id="ordBudget">
+            <option value="">Select...</option>
+            <option>Under $50</option>
+            <option>$50 – $150</option>
+            <option>$150 – $300</option>
+            <option>$300+</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Deadline</label>
+          <select id="ordDeadline">
+            <option value="">Select...</option>
+            <option>ASAP (1–3 days)</option>
+            <option>Within a week</option>
+            <option>2 weeks</option>
+            <option>No rush</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label>Style preferences</label>
+        <select id="ordStyle">
+          <option value="">Select a style...</option>
+          <option>Clean & minimal</option>
+          <option>Bold & colorful</option>
+          <option>Dark & professional</option>
+          <option>Warm & friendly</option>
+          <option>Elegant & luxury</option>
+          <option>Fun & playful</option>
+          <option>Not sure — surprise me</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Anything else you want us to know?</label>
+        <textarea id="ordExtras" placeholder="Special features, branding colors, competitor sites you like..."></textarea>
+      </div>
+      <button class="form-submit" onclick="submitOrder()">Submit order →</button>
+      <p class="form-note">We'll review your order and get back to you within 24 hours.</p>
+    </div>
+
+    <!-- SUCCESS -->
+    <div class="success-box" id="formSuccess">
+      <div class="success-icon">✓</div>
+      <h3 id="successTitle">Order received!</h3>
+      <p id="successMsg">Thanks! We've got your order and will review it within 24 hours. Check your dashboard to track progress.</p>
+      <br>
+      <button class="form-submit" style="margin-top:0" onclick="closeModal()">Done</button>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  let currentUser = null;
+  let orders = [];
+
+  function openModal(type) {
+    document.getElementById('modalOverlay').classList.add('open');
+    ['Login','Signup','Order','Success'].forEach(f => {
+      document.getElementById('form'+f).style.display = 'none';
+    });
+    if(type === 'login') document.getElementById('formLogin').style.display = 'block';
+    if(type === 'signup') document.getElementById('formSignup').style.display = 'block';
+    if(type === 'order') document.getElementById('formOrder').style.display = 'block';
+  }
+
+  function closeModal() {
+    document.getElementById('modalOverlay').classList.remove('open');
+  }
+
+  function closeModalOutside(e) {
+    if(e.target === document.getElementById('modalOverlay')) closeModal();
+  }
+
+  function switchForm(type) {
+    ['Login','Signup','Order','Success'].forEach(f => {
+      document.getElementById('form'+f).style.display = 'none';
+    });
+    document.getElementById('form' + type.charAt(0).toUpperCase() + type.slice(1)).style.display = 'block';
+  }
+
+  function doLogin() {
+    const email = document.getElementById('loginEmail').value.trim();
+    if(!email) { alert('Please enter your email.'); return; }
+    currentUser = { name: email.split('@')[0], email };
+    showDashboard();
+    closeModal();
+  }
+
+  function doSignup() {
+    const first = document.getElementById('signupFirst').value.trim();
+    const last = document.getElementById('signupLast').value.trim();
+    const email = document.getElementById('signupEmail').value.trim();
+    const pass = document.getElementById('signupPass').value;
+    if(!first || !email || !pass) { alert('Please fill in all required fields.'); return; }
+    if(pass.length < 6) { alert('Password must be at least 6 characters.'); return; }
+    currentUser = { name: first + (last ? ' ' + last : ''), email };
+    showDashboard();
+    closeModal();
+  }
+
+  function showDashboard() {
+    document.getElementById('landing').style.display = 'none';
+    document.getElementById('dashboard').style.display = 'block';
+    document.getElementById('dashWelcome').textContent = 'Welcome, ' + currentUser.name + '! 👋';
+    document.getElementById('navBtns').innerHTML =
+      '<span style="font-size:14px;color:var(--muted);">' + currentUser.name + '</span>' +
+      '<button class="btn-ghost" onclick="logout()">Log out</button>';
+    renderOrders();
+  }
+
+  function logout() {
+    currentUser = null;
+    orders = [];
+    document.getElementById('landing').style.display = 'block';
+    document.getElementById('dashboard').style.display = 'none';
+    document.getElementById('navBtns').innerHTML =
+      '<button class="btn-ghost" onclick="openModal(\'login\')">Log in</button>' +
+      '<button class="btn-accent" onclick="openModal(\'signup\')">Get started</button>';
+  }
+
+  function submitOrder() {
+    const name = document.getElementById('ordName').value.trim();
+    const email = document.getElementById('ordEmail').value.trim();
+    const desc = document.getElementById('ordDesc').value.trim();
+    if(!name || !email || !desc) { alert('Please fill in name, email, and website description.'); return; }
+    const order = {
+      id: '#WC-' + Math.floor(1000 + Math.random() * 9000),
+      name,
+      desc,
+      budget: document.getElementById('ordBudget').value || 'Not specified',
+      deadline: document.getElementById('ordDeadline').value || 'Not specified',
+      style: document.getElementById('ordStyle').value || 'Not specified',
+      extras: document.getElementById('ordExtras').value,
+      status: 'pending',
+      date: new Date().toLocaleDateString('en-US', {month:'short',day:'numeric',year:'numeric'})
+    };
+    orders.unshift(order);
+    renderOrders();
+    switchForm('success');
+    document.getElementById('successTitle').textContent = 'Order ' + order.id + ' received!';
+    document.getElementById('successMsg').textContent = 'Thanks ' + name + '! We\'ve received your order and will be in touch within 24 hours. Track your order from the dashboard.';
+  }
+
+  function renderOrders() {
+    const list = document.getElementById('ordersList');
+    if(orders.length === 0) {
+      list.innerHTML = '<div class="orders-empty"><h3>No orders yet</h3><p>Place your first order and we\'ll get building!</p><br><button class="btn-accent" onclick="openModal(\'order\')">Order a website →</button></div>';
+      return;
+    }
+    list.innerHTML = orders.map(o => {
+      const statusClass = o.status === 'pending' ? 'status-pending' : o.status === 'progress' ? 'status-progress' : 'status-done';
+      const statusLabel = o.status === 'pending' ? '⏳ Pending review' : o.status === 'progress' ? '🔨 In progress' : '✅ Delivered';
+      return `<div class="order-card">
+        <div class="order-info">
+          <h4>${o.id} — ${o.desc.length > 60 ? o.desc.slice(0,60)+'...' : o.desc}</h4>
+          <p>Budget: ${o.budget} · Deadline: ${o.deadline} · Style: ${o.style} · Ordered: ${o.date}</p>
+        </div>
+        <div class="status-badge ${statusClass}">${statusLabel}</div>
+      </div>`;
+    }).join('');
+  }
+</script>
+</body>
+</html>
