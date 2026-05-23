@@ -613,7 +613,7 @@ footer{border-top:0.5px solid var(--b1);padding:3rem;background:var(--s1)}
           <h4>Payment instructions</h4>
           <div id="payInstructionsText" style="font-size:13px;color:var(--mt);line-height:1.7;font-weight:300"></div>
         </div>
-        <div class="coming-soon">⚡ Online card payments coming soon! For now, use one of the methods above and let us know when you've sent the payment.</div>
+        <div style="margin-top:1rem"><button class="fs" style="background:linear-gradient(135deg,#635bff,#4f46e5);font-size:16px;padding:14px" onclick="payWithStripe()">💳 Pay securely with card →</button><p style="font-size:12px;color:var(--mt);text-align:center;margin-top:8px;font-weight:300">🔒 Powered by Stripe — Visa, Mastercard, Amex, Apple Pay &amp; Google Pay</p></div><div style="height:0.5px;background:var(--b2);margin:1rem 0"></div><p style="font-size:13px;color:var(--mt);text-align:center;margin-bottom:8px">Or already paid another way?</p>
         <button class="fs" style="margin-top:1rem;background:linear-gradient(135deg,var(--gn),#25a870)" onclick="confirmPayment()">I've sent the payment ✓</button>
       </div>
     </div>
@@ -898,3 +898,34 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();});
 </script>
 </body>
 </html>
+<script>
+const STRIPE_PK='pk_live_51TaIgBCdu8vxSNlox3Huxg7sWttwv55AEOOogQK3GnNdIinr2CcyoWTrXaO62ehae4Ecg5BKuRAgkBWzWCGr0zNS00BQ6gwkHK';
+async function payWithStripe(){
+  if(!currentPayOrderId)return;
+  const amount=document.getElementById('payAmount').textContent.replace('$','');
+  const btn=event.target;btn.disabled=true;btn.textContent='Opening checkout...';
+  try{
+    const res=await fetch(SU+'/functions/v1/create-checkout',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+SK},
+      body:JSON.stringify({amount:Math.round(parseFloat(amount)*100),orderId:currentPayOrderId,email:user?.email||'',successUrl:'https://amanuelgebrezghi.github.io?payment=success',cancelUrl:'https://amanuelgebrezghi.github.io?payment=cancelled'})
+    });
+    const data=await res.json();
+    if(data.url){window.location.href=data.url;}
+    else{throw new Error('No URL');}
+  }catch(err){
+    btn.disabled=false;btn.textContent='💳 Pay securely with card →';
+    alert('Card checkout starting soon! For now please use Zelle, Cash App, or PayPal.');
+  }
+}
+const urlParams=new URLSearchParams(window.location.search);
+if(urlParams.get('payment')==='success'){
+  window.addEventListener('load',()=>{
+    document.getElementById('stitle').textContent='Payment successful! 🎉';
+    document.getElementById('smsg').textContent='Thank you! Your payment was received. We will finalize your website delivery shortly.';
+    document.getElementById('overlay').classList.add('open');
+    ['Login','Signup','Order','Pay'].forEach(f=>{const el=document.getElementById('f'+f);if(el)el.style.display='none';});
+    document.getElementById('fSuccess').style.display='block';
+  });
+}
+</script>
