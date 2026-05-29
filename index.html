@@ -4,6 +4,17 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>WebCraft — Premium Custom Websites Built For You</title>
+<!-- Google Analytics — replace G-89GY6VW3CP with your Measurement ID -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-89GY6VW3CP"></script>
+<script>
+  window.dataLayer=window.dataLayer||[];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js',new Date());
+  gtag('config','G-89GY6VW3CP',{
+    page_title:document.title,
+    page_location:window.location.href
+  });
+</script>
 <meta name="description" content="WebCraft builds stunning custom websites starting at $49. You see it before you pay. Delivered in 3 days.">
 <meta name="keywords" content="custom website, web design, affordable website, professional website, portfolio website">
 <meta property="og:title" content="WebCraft — Premium Custom Websites">
@@ -599,26 +610,39 @@ footer{border-top:.5px solid var(--r2);background:var(--s1);padding:4rem 3rem 2.
           <div class="avg-count" id="avgCount"></div>
         </div>
       </div>
-      <div class="rev-form">
+      <div class="rev-form" id="revFormWrap">
         <h3>Leave a review ⭐</h3>
-        <div class="rf-err" id="rfErr"></div>
-        <div class="rf-ok" id="rfOk"></div>
-        <div class="rf"><label>Your rating</label>
-          <div class="star-row">
-            <button class="sbtn" onclick="setRating(1)" data-v="1">★</button>
-            <button class="sbtn" onclick="setRating(2)" data-v="2">★</button>
-            <button class="sbtn" onclick="setRating(3)" data-v="3">★</button>
-            <button class="sbtn" onclick="setRating(4)" data-v="4">★</button>
-            <button class="sbtn" onclick="setRating(5)" data-v="5">★</button>
+        <!-- NOT LOGGED IN STATE -->
+        <div id="revLoginPrompt" style="text-align:center;padding:2rem 1rem">
+          <div style="font-size:3rem;margin-bottom:1rem">🔒</div>
+          <p style="font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;margin-bottom:.5rem;letter-spacing:-.02em">Login to leave a review</p>
+          <p style="font-size:13px;color:var(--m2);margin-bottom:1.5rem;font-weight:300">You need an account to leave a review. Already a client? Sign in!</p>
+          <div style="display:flex;gap:10px;justify-content:center">
+            <button class="fs-btn" style="flex:1;margin:0" onclick="openModal('Login')">Log in</button>
+            <button class="p-btn out" style="flex:1" onclick="openModal('Signup')">Sign up free</button>
           </div>
         </div>
-        <div class="rf"><label>Your name</label><input type="text" id="rfName" placeholder="Jane Doe" maxlength="100"/></div>
-        <div class="rf"><label>Type of website</label>
-          <select id="rfType"><option value="">Select type...</option><option>Portfolio / Personal</option><option>Business website</option><option>E-commerce store</option><option>Restaurant / Food</option><option>Landing page</option><option>Blog</option><option>Other</option></select>
+        <!-- LOGGED IN STATE -->
+        <div id="revFormFields" style="display:none">
+          <div class="rf-err" id="rfErr"></div>
+          <div class="rf-ok" id="rfOk"></div>
+          <div class="rf"><label>Your rating</label>
+            <div class="star-row">
+              <button class="sbtn" onclick="setRating(1)" data-v="1">★</button>
+              <button class="sbtn" onclick="setRating(2)" data-v="2">★</button>
+              <button class="sbtn" onclick="setRating(3)" data-v="3">★</button>
+              <button class="sbtn" onclick="setRating(4)" data-v="4">★</button>
+              <button class="sbtn" onclick="setRating(5)" data-v="5">★</button>
+            </div>
+          </div>
+          <div class="rf"><label>Your name</label><input type="text" id="rfName" placeholder="Jane Doe" maxlength="100"/></div>
+          <div class="rf"><label>Type of website</label>
+            <select id="rfType"><option value="">Select type...</option><option>Portfolio / Personal</option><option>Business website</option><option>E-commerce store</option><option>Restaurant / Food</option><option>Landing page</option><option>Blog</option><option>Other</option></select>
+          </div>
+          <div class="rf"><label>Your review</label><textarea id="rfText" placeholder="Tell others about your experience..." maxlength="500"></textarea></div>
+          <button class="rf-btn" id="rfBtn" onclick="submitReview()">Submit review →</button>
+          <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--m3);text-align:center;margin-top:8px;letter-spacing:.05em" id="rfLoggedAs"></div>
         </div>
-        <div class="rf"><label>Your review</label><textarea id="rfText" placeholder="Tell others about your experience..." maxlength="500"></textarea></div>
-        <button class="rf-btn" id="rfBtn" onclick="submitReview()">Submit review →</button>
-        <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--m3);text-align:center;margin-top:8px;letter-spacing:.05em">Must be logged in to leave a review</div>
       </div>
     </div>
     <div class="rev-grid" id="revGrid"><div class="loading">Loading reviews...</div></div>
@@ -915,7 +939,10 @@ function getProgress(status,payStatus){
 }
 
 // Auth
-sb.auth.getSession().then(({data:{session}})=>{if(session){user=session.user;showDash()}});
+sb.auth.getSession().then(({data:{session}})=>{
+  if(session){user=session.user;showDash();}
+  else{updateReviewForm();}
+});
 loadReviews();
 
 async function doSignup(){
@@ -971,6 +998,7 @@ function showDash(){
   const name=user.user_metadata?.full_name||user.email;
   document.getElementById('dashWelcome').textContent='Welcome back, '+name+'! 👋';
   document.getElementById('navBtns').innerHTML=`<span style="font-family:'DM Mono',monospace;font-size:12px;color:var(--m1)">${name}</span><button class="btn-ghost" onclick="doLogout()">Log out</button>`;
+  updateReviewForm();
   loadOrders();
 }
 
@@ -1055,6 +1083,20 @@ async function loadReviews(){
     const ci=r.name?r.name.charCodeAt(0)%4:0;
     return`<div class="rev-card"><div class="rev-stars">${stars}</div><p class="rev-text">"${san(r.review)}"</p><div class="rev-auth"><div class="rev-av" style="background:${cols[ci]};color:${tcols[ci]}">${init}</div><div><div class="rev-name">${san(r.name)}</div><div class="rev-type">${r.website_type||'WebCraft client'}</div></div></div></div>`;
   }).join('');
+}
+
+function updateReviewForm(){
+  const loginPrompt=document.getElementById('revLoginPrompt');
+  const formFields=document.getElementById('revFormFields');
+  const loggedAs=document.getElementById('rfLoggedAs');
+  if(user){
+    if(loginPrompt)loginPrompt.style.display='none';
+    if(formFields)formFields.style.display='block';
+    if(loggedAs)loggedAs.textContent='Logged in as '+( user.user_metadata?.full_name||user.email);
+  }else{
+    if(loginPrompt)loginPrompt.style.display='block';
+    if(formFields)formFields.style.display='none';
+  }
 }
 
 async function submitReview(){
